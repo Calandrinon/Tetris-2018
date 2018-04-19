@@ -69,19 +69,28 @@ void input() {
         }
 }
 
+void drop_block() {
+        if (blocks[num_blocks - 1].x + BLOCK_SIZE == SCREEN_H) {
+                add_block();
+        }
+
+        blocks[num_blocks - 1].x++;
+}
+
 int main() {
-        /*
         add_block();
 
         while (!key_pressed(VK_ESCAPE)) {
                 clear_block_image(&blocks[num_blocks - 1]);
                 input();
-                blocks[0].x++;
-                Sleep(500);
-                system("cls");
+                drop_block();
+
                 draw_blocks();
                 blit_screen();
+
+                Sleep(500);
+                system("cls");
         }
-        */
+
         return 0;
 }
