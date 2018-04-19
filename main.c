@@ -70,7 +70,7 @@ void input() {
 }
 
 void drop_block() {
-        if (blocks[num_blocks - 1].x + BLOCK_SIZE == SCREEN_H) {
+        if (blocks[num_blocks - 1].x + BLOCK_SIZE == SCREEN_H - 1) {
                 add_block();
         }
 
