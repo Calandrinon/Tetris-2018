@@ -1,7 +1,7 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 #define BLOCK_SIZE 4
-#define NUM_TYPES 7
+#define NUM_TYPES 5
 
 struct Block {
         char model[BLOCK_SIZE][BLOCK_SIZE];
