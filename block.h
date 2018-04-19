@@ -1,8 +1,10 @@
 #ifndef BLOCK_H
 #define BLOCK_H
+#define BLOCK_SIZE 4
+#define NUM_TYPES 7
 
 struct Block {
-        char model[4][4];
+        char model[BLOCK_SIZE][BLOCK_SIZE];
         int x, y;
 };
 
@@ -14,6 +16,6 @@ void t4(struct Block*);
 void t5(struct Block*);
 void t6(struct Block*);
 void t7(struct Block*);
-void (*type[7])(struct Block*);
+void (*type[NUM_TYPES])(struct Block*);
 
 #endif

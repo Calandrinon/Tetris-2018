@@ -2,8 +2,8 @@
 #include "block.h"
 
 void clear_block(struct Block* block) {
-        for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++)
+        for (int i = 0; i < BLOCK_SIZE; i++) {
+                for (int j = 0; j < BLOCK_SIZE; j++)
                         block->model[i][j] = ' ';
         }
 }
@@ -64,4 +64,4 @@ void t7(struct Block* block) {
         block->model[3][2] = '0';
 }
 
-void (*type[7])(struct Block*) = {t1, t2, t3, t4, t5, t6, t7};
+void (*type[NUM_TYPES])(struct Block*) = {t1, t2, t3, t4, t5, t6, t7};
