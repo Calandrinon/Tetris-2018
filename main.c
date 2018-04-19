@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
+#include <stdbool.h>
 #include "block.h"
-#define SCREEN_W 10 //columns
+#define SCREEN_W 18 //columns
 #define SCREEN_H 14 //rows
 
 char screen[SCREEN_H][SCREEN_W];
@@ -47,11 +48,34 @@ void add_block() {
         num_blocks++;
 }
 
+bool key_pressed(int key) {
+        return (GetAsyncKeyState(key) & 0x8000);
+}
+
+void clear_block_image(struct Block *block) {
+        for (int i = block->x; i <= block->x + BLOCK_SIZE; i++) {
+                for (int j = block->y; j <= block->y + BLOCK_SIZE; j++)
+                        screen[i][j] = ' ';
+        }
+}
+
+void input() {
+        if (key_pressed(VK_LEFT) && blocks[num_blocks - 1].y > 0) {
+                blocks[num_blocks - 1].y--;
+        }
+
+        if (key_pressed(VK_RIGHT) && blocks[num_blocks - 1].y + BLOCK_SIZE < SCREEN_W) {
+                blocks[num_blocks - 1].y++;
+        }
+}
+
 int main() {
-        /*    TEST:
+        /*
         add_block();
 
-        while (blocks[0].x < SCREEN_H - BLOCK_SIZE) {
+        while (!key_pressed(VK_ESCAPE)) {
+                clear_block_image(&blocks[num_blocks - 1]);
+                input();
                 blocks[0].x++;
                 Sleep(500);
                 system("cls");
