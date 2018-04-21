@@ -5,7 +5,7 @@
 
 char screen[SCREEN_H][SCREEN_W];
 struct Block blocks[256];
-int num_blocks;
+int num_blocks, sleep_time = 333;
 
 void init_screen() {
         for (int i = 0; i < SCREEN_H; i++) {
@@ -104,6 +104,12 @@ void input() {
                 blocks[num_blocks - 1].y++;
         }
 
+        if (key_pressed(VK_DOWN)) {
+                sleep_time = 5;
+        } else {
+                sleep_time = 333;
+        }
+
         if (key_pressed(VK_D)) {
                 rotate_block(&blocks[num_blocks - 1]);
         }
@@ -129,7 +135,7 @@ int main() {
                 draw_blocks();
                 blit_screen();
 
-                Sleep(250);
+                Sleep(sleep_time);
                 system("cls");
         }
 
