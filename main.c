@@ -11,6 +11,13 @@ char screen[SCREEN_H][SCREEN_W];
 struct Block blocks[256];
 int num_blocks;
 
+void init_screen() {
+        for (int i = 0; i < SCREEN_H; i++) {
+                for (int j = 0; j < SCREEN_W; j++)
+                        screen[i][j] = ' ';
+        }
+}
+
 void blit_screen() {
         for (int i = 0; i < SCREEN_H; i++) {
                 for (int j = 0; j < SCREEN_W; j++)
@@ -21,8 +28,11 @@ void blit_screen() {
 
 void draw_block_to_screen(struct Block *block) {
         for (int i = 0; i < BLOCK_SIZE; i++) {
-                for (int j = 0; j < BLOCK_SIZE; j++)
-                        screen[i + block->x][j + block->y] = block->model[i][j];
+                for (int j = 0; j < BLOCK_SIZE; j++) {
+                        if (block->model[i][j] != ' ') {
+                                screen[i + block->x][j + block->y] = block->model[i][j];
+                        }
+                }
         }
 }
 
@@ -53,9 +63,11 @@ bool key_pressed(int key) {
 }
 
 void clear_block_image(struct Block *block) {
-        for (int i = block->x; i <= block->x + BLOCK_SIZE; i++) {
-                for (int j = block->y; j <= block->y + BLOCK_SIZE; j++)
-                        screen[i][j] = ' ';
+        for (int i = 0; i < BLOCK_SIZE; i++) {
+                for (int j = 0; j < BLOCK_SIZE; j++) {
+                        if (block->model[i][j] != ' ')
+                                screen[i + block->x][j + block->y] = ' ';
+                }
         }
 }
 
@@ -69,8 +81,25 @@ void input() {
         }
 }
 
+bool bottom_collision(struct Block *block) {
+        for (int i = 0; i <= BLOCK_SIZE - 1; i++) {
+                if (block->model[BLOCK_SIZE - 1][i] != ' ' && screen[block->x + BLOCK_SIZE][block->y + i] != ' ')
+                        return true;
+        }
+
+        for (int i = BLOCK_SIZE - 2; i >= 0; i--) {
+                for (int j = BLOCK_SIZE - 1; j >= 0; j--) {
+                        if (block->model[i][j] != ' ' && block->model[i + 1][j] == ' '
+                         && screen[block->x + i + 1][block->y + j] != ' ')
+                                return true;
+                }
+        }
+
+        return false;
+}
+
 void drop_block() {
-        if (blocks[num_blocks - 1].x + BLOCK_SIZE == SCREEN_H - 1) {
+        if (bottom_collision(&blocks[num_blocks - 1]) || blocks[num_blocks - 1].x + BLOCK_SIZE == SCREEN_H - 1) {
                 add_block();
         }
 
@@ -78,6 +107,7 @@ void drop_block() {
 }
 
 int main() {
+        init_screen();
         add_block();
 
         while (!key_pressed(VK_ESCAPE)) {
