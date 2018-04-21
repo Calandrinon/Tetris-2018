@@ -49,3 +49,30 @@ void t5(struct Block* block) {
 }
 
 void (*type[NUM_TYPES])(struct Block*) = {t1, t2, t3, t4, t5};
+
+struct Block generate_block() {
+        struct Block block;
+
+        srand(time(NULL));
+        block.type = rand() % NUM_TYPES;
+        type[block.type](&block);
+        block.x = -BLOCK_SIZE - 1;
+        block.y = rand() % (SCREEN_W - 1);
+
+        return block;
+}
+
+void rotate_block(struct Block *block) {
+        char new_model[BLOCK_SIZE][BLOCK_SIZE];
+        for (int i = BLOCK_SIZE - 1; i >= 0; i--) {
+                for (int j = BLOCK_SIZE - 1; j >= 0; j--) {
+                        new_model[BLOCK_SIZE - j - 1][i] = block->model[i][j];
+                }
+        }
+
+        for (int i = 0; i < BLOCK_SIZE; i++) {
+                for (int j = 0; j < BLOCK_SIZE; j++) {
+                        block->model[i][j] = new_model[i][j];
+                }
+        }
+}

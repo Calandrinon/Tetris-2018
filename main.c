@@ -1,11 +1,7 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include <windows.h>
 #include <stdbool.h>
 #include "block.h"
-#define SCREEN_W 18 //columns
-#define SCREEN_H 14 //rows
 
 char screen[SCREEN_H][SCREEN_W];
 struct Block blocks[256];
@@ -41,17 +37,6 @@ void draw_blocks() {
                 draw_block_to_screen(&blocks[i]);
 }
 
-struct Block generate_block() {
-        struct Block block;
-
-        srand(time(NULL));
-        type[rand() % NUM_TYPES](&block);
-        block.x = -BLOCK_SIZE - 1;
-        block.y = rand() % (NUM_TYPES - 1);
-
-        return block;
-}
-
 void add_block() {
         struct Block block = generate_block();
         blocks[num_blocks] = block;
@@ -78,6 +63,10 @@ void input() {
 
         if (key_pressed(VK_RIGHT) && blocks[num_blocks - 1].y + BLOCK_SIZE < SCREEN_W) {
                 blocks[num_blocks - 1].y++;
+        }
+
+        if (key_pressed(VK_D)) {
+                rotate_block(&blocks[num_blocks - 1]);
         }
 }
 
@@ -118,7 +107,7 @@ int main() {
                 draw_blocks();
                 blit_screen();
 
-                Sleep(500);
+                Sleep(250);
                 system("cls");
         }
 
