@@ -56,18 +56,26 @@ void clear_block_image(struct Block *block) {
         }
 }
 
-void input() {
-        if (key_pressed(VK_LEFT) && blocks[num_blocks - 1].y > 0) {
-                blocks[num_blocks - 1].y--;
+bool left_collision(struct Block *block) {
+        for (int i = 0; i < BLOCK_SIZE; i++) {
+                for (int j = 0; j < BLOCK_SIZE; j++) {
+                        if (block->model[i][j] != ' ' && block->model[i][j - 1] == ' ' && (screen[block->x + i][block->y + j - 1] != ' ' || block->y + j - 1 < 0))
+                                return true;
+                }
         }
 
-        if (key_pressed(VK_RIGHT) && blocks[num_blocks - 1].y + BLOCK_SIZE < SCREEN_W) {
-                blocks[num_blocks - 1].y++;
+        return false;
+}
+
+bool right_collision(struct Block *block) {
+        for (int i = 0; i < BLOCK_SIZE; i++) {
+                for (int j = 0; j < BLOCK_SIZE; j++) {
+                        if (block->model[i][j] != ' ' && block->model[i][j + 1] == ' ' && (screen[block->x + i][block->y + j + 1] != ' ' || block->y + j + 1 >= SCREEN_W))
+                                return true;
+                }
         }
 
-        if (key_pressed(VK_D)) {
-                rotate_block(&blocks[num_blocks - 1]);
-        }
+        return false;
 }
 
 bool bottom_collision(struct Block *block) {
@@ -85,6 +93,20 @@ bool bottom_collision(struct Block *block) {
         }
 
         return false;
+}
+
+void input() {
+        if (key_pressed(VK_LEFT) && !left_collision(&blocks[num_blocks - 1])) {
+                blocks[num_blocks - 1].y--;
+        }
+
+        if (key_pressed(VK_RIGHT) && !right_collision(&blocks[num_blocks - 1])) {
+                blocks[num_blocks - 1].y++;
+        }
+
+        if (key_pressed(VK_D)) {
+                rotate_block(&blocks[num_blocks - 1]);
+        }
 }
 
 void drop_block() {
