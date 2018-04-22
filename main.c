@@ -23,8 +23,8 @@ void blit_screen() {
 }
 
 void draw_block_to_screen(struct Block *block) {
-        for (int i = 0; i < BLOCK_SIZE; i++) {
-                for (int j = 0; j < BLOCK_SIZE; j++) {
+        for (int i = 0; i < block->size; i++) {
+                for (int j = 0; j < block->size; j++) {
                         if (block->model[i][j] != ' ') {
                                 screen[i + block->x][j + block->y] = block->model[i][j];
                         }
@@ -48,8 +48,8 @@ bool key_pressed(int key) {
 }
 
 void clear_block_image(struct Block *block) {
-        for (int i = 0; i < BLOCK_SIZE; i++) {
-                for (int j = 0; j < BLOCK_SIZE; j++) {
+        for (int i = 0; i < block->size; i++) {
+                for (int j = 0; j < block->size; j++) {
                         if (block->model[i][j] != ' ')
                                 screen[i + block->x][j + block->y] = ' ';
                 }
@@ -57,8 +57,8 @@ void clear_block_image(struct Block *block) {
 }
 
 bool left_collision(struct Block *block) {
-        for (int i = 0; i < BLOCK_SIZE; i++) {
-                for (int j = 0; j < BLOCK_SIZE; j++) {
+        for (int i = 0; i < block->size; i++) {
+                for (int j = 0; j < block->size; j++) {
                         if (block->model[i][j] != ' ' && block->model[i][j - 1] == ' ' && (screen[block->x + i][block->y + j - 1] != ' ' || block->y + j - 1 < 0))
                                 return true;
                 }
@@ -68,8 +68,8 @@ bool left_collision(struct Block *block) {
 }
 
 bool right_collision(struct Block *block) {
-        for (int i = 0; i < BLOCK_SIZE; i++) {
-                for (int j = 0; j < BLOCK_SIZE; j++) {
+        for (int i = 0; i < block->size; i++) {
+                for (int j = 0; j < block->size; j++) {
                         if (block->model[i][j] != ' ' && block->model[i][j + 1] == ' ' && (screen[block->x + i][block->y + j + 1] != ' ' || block->y + j + 1 >= SCREEN_W))
                                 return true;
                 }
@@ -79,13 +79,13 @@ bool right_collision(struct Block *block) {
 }
 
 bool bottom_collision(struct Block *block) {
-        for (int i = 0; i <= BLOCK_SIZE - 1; i++) {
-                if (block->model[BLOCK_SIZE - 1][i] != ' ' && screen[block->x + BLOCK_SIZE][block->y + i] != ' ')
+        for (int i = 0; i <= block->size - 1; i++) {
+                if (block->model[block->size - 1][i] != ' ' && screen[block->x + block->size][block->y + i] != ' ')
                         return true;
         }
 
-        for (int i = BLOCK_SIZE - 2; i >= 0; i--) {
-                for (int j = BLOCK_SIZE - 1; j >= 0; j--) {
+        for (int i = block->size - 2; i >= 0; i--) {
+                for (int j = block->size - 1; j >= 0; j--) {
                         if (block->model[i][j] != ' ' && block->model[i + 1][j] == ' '
                          && screen[block->x + i + 1][block->y + j] != ' ')
                                 return true;
@@ -116,7 +116,7 @@ void input() {
 }
 
 void drop_block() {
-        if (bottom_collision(&blocks[num_blocks - 1]) || blocks[num_blocks - 1].x + BLOCK_SIZE == SCREEN_H - 1) {
+        if (bottom_collision(&blocks[num_blocks - 1]) || blocks[num_blocks - 1].x + blocks[num_blocks - 1].size == SCREEN_H) {
                 add_block();
         }
 

@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <time.h>
 #define BLOCK_H
-#define BLOCK_SIZE 4
+#define MAX_BLOCK_SIZE 4
 #define NUM_TYPES 5
 #include "main.h"
 
 struct Block {
-        char model[BLOCK_SIZE][BLOCK_SIZE];
-        int x, y, type;
+        int x, y, type, size;
+        char model[MAX_BLOCK_SIZE][MAX_BLOCK_SIZE];
 };
 
 void clear_block(struct Block*);
