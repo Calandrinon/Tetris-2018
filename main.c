@@ -4,7 +4,7 @@
 #include "block.h"
 
 char screen[SCREEN_H][SCREEN_W];
-struct Block blocks[256];
+struct Block cr_block;
 int num_blocks, sleep_time = 333;
 
 void init_screen() {
@@ -32,15 +32,8 @@ void draw_block_to_screen(struct Block *block) {
         }
 }
 
-void draw_blocks() {
-        for (int i = 0; i < num_blocks; i++)
-                draw_block_to_screen(&blocks[i]);
-}
-
-void add_block() {
-        struct Block block = generate_block();
-        blocks[num_blocks] = block;
-        num_blocks++;
+void create_block() {
+        cr_block = generate_block();
 }
 
 bool key_pressed(int key) {
@@ -96,12 +89,12 @@ bool bottom_collision(struct Block *block) {
 }
 
 void input() {
-        if (key_pressed(VK_LEFT) && !left_collision(&blocks[num_blocks - 1])) {
-                blocks[num_blocks - 1].y--;
+        if (key_pressed(VK_LEFT) && !left_collision(&cr_block)) {
+                cr_block.y--;
         }
 
-        if (key_pressed(VK_RIGHT) && !right_collision(&blocks[num_blocks - 1])) {
-                blocks[num_blocks - 1].y++;
+        if (key_pressed(VK_RIGHT) && !right_collision(&cr_block)) {
+                cr_block.y++;
         }
 
         if (key_pressed(VK_DOWN)) {
@@ -111,28 +104,65 @@ void input() {
         }
 
         if (key_pressed(VK_D)) {
-                rotate_block(&blocks[num_blocks - 1]);
+                rotate_block(&cr_block);
         }
 }
 
 void drop_block() {
-        if (bottom_collision(&blocks[num_blocks - 1]) || blocks[num_blocks - 1].x + blocks[num_blocks - 1].size == SCREEN_H) {
-                add_block();
+        if (bottom_collision(&cr_block) || cr_block.x + cr_block.size == SCREEN_H) {
+                create_block();
         }
 
-        blocks[num_blocks - 1].x++;
+        cr_block.x++;
+}
+
+void delete_lines() {
+        bool line_del = false;
+        for (int i = SCREEN_H - 1; i >= 0; i--) {
+                bool full = true;
+                for (int j = SCREEN_W - 1; j >= 0; j--) {
+                        if (screen[i][j] == ' ') {
+                                full = false;
+                                break;
+                        }
+                }
+
+                if (full) {
+                        line_del = true;
+                        for (int j = SCREEN_W - 1; j >= 0; j--) {
+                                screen[i][j] = ' ';
+                        }
+                }
+        }
+
+        if (!line_del)
+                return;
+
+        for (int i = SCREEN_H - 1; i >= 0; i--) {
+                for (int j = SCREEN_W - 1; j >= 0; j--) {
+                        if (screen[i][j] != ' ') {
+                                int r = i + 1;
+                                while(screen[r][j] == ' ' && r < SCREEN_H)
+                                        r++;
+                                screen[r - 1][j] = screen[i][j];
+                                screen[i][j] = ' ';
+                        }
+                }
+        }
 }
 
 int main() {
         init_screen();
-        add_block();
+        create_block();
 
         while (!key_pressed(VK_ESCAPE)) {
-                clear_block_image(&blocks[num_blocks - 1]);
+                if (!bottom_collision(&cr_block) && cr_block.x + cr_block.size != SCREEN_H)
+                        clear_block_image(&cr_block);
                 input();
                 drop_block();
+                delete_lines();
 
-                draw_blocks();
+                draw_block_to_screen(&cr_block);
                 blit_screen();
 
                 Sleep(sleep_time);
