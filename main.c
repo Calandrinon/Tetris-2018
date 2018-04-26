@@ -4,7 +4,7 @@
 #include "block.h"
 
 static struct Block cr_block;
-static int num_blocks, sleep_time = 333;
+static int num_blocks, sleep_time = 333, lines_removed, score;
 
 void init_screen() {
         for (int i = 0; i < SCREEN_H; i++) {
@@ -14,6 +14,8 @@ void init_screen() {
 }
 
 void blit_screen() {
+        system("cls");
+
         for (int i = 0; i < SCREEN_H; i++) {
                 for (int j = 0; j < SCREEN_W; j++)
                         printf("%c ", screen[i][j]);
@@ -109,6 +111,7 @@ void input() {
 
 void drop_block() {
         if (bottom_collision(&cr_block) || cr_block.x + cr_block.size == SCREEN_H) {
+                score += 10 * (lines_removed / 10 + 2);
                 create_block();
         }
 
@@ -117,6 +120,8 @@ void drop_block() {
 
 void delete_lines() {
         bool line_del = false;
+        int num_lines = 0;
+
         for (int i = SCREEN_H - 1; i >= 0; i--) {
                 bool full = true;
                 for (int j = SCREEN_W - 1; j >= 0; j--) {
@@ -127,6 +132,7 @@ void delete_lines() {
                 }
 
                 if (full) {
+                        num_lines++;
                         line_del = true;
                         for (int j = SCREEN_W - 1; j >= 0; j--) {
                                 screen[i][j] = ' ';
@@ -148,8 +154,36 @@ void delete_lines() {
                         }
                 }
         }
+
+        if (!num_lines)
+                return;
+
+        lines_removed += num_lines;
+        int line_score;
+
+        switch (num_lines) {
+                case 1:
+                        line_score = 50;
+                        break;
+                case 2:
+                        line_score = 150;
+                        break;
+                case 3:
+                        line_score = 350;
+                        break;
+                case 4:
+                        line_score = 1000;
+                        break;
+        }
+
+        score += line_score * (lines_removed / 10 + 1);
 }
 
+void display_score() {
+        printf("\nSCORE: %d              LEVEL %d", score, lines_removed / 10 + 1);
+}
+
+//TODO: make functions in the main file static
 int main() {
         init_screen();
         create_block();
@@ -157,7 +191,7 @@ int main() {
         while (!key_pressed(VK_ESCAPE)) {
                 if (!bottom_collision(&cr_block) && cr_block.x + cr_block.size != SCREEN_H)
                         clear_block_image(&cr_block);
-                //input();
+
                 drop_block();
                 input();
                 delete_lines();
@@ -165,8 +199,8 @@ int main() {
                 draw_block_to_screen(&cr_block);
                 blit_screen();
 
+                display_score();
                 Sleep(sleep_time);
-                system("cls");
         }
 
         return 0;
