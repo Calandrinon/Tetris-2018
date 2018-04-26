@@ -17,8 +17,6 @@ void t2(struct Block*);
 void t3(struct Block*);
 void t4(struct Block*);
 void t5(struct Block*);
-void t6(struct Block*);
-void t7(struct Block*);
 void (*type[NUM_TYPES])(struct Block*);
 struct Block generate_block();
 void rotate_block(struct Block*);
