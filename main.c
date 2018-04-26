@@ -4,16 +4,16 @@
 #include "block.h"
 
 static struct Block cr_block;
-static int num_blocks, sleep_time = 333, lines_removed, score;
+static int num_blocks, sleep_time = 333, lines_removed, score = -20;
 
-void init_screen() {
+static void init_screen() {
         for (int i = 0; i < SCREEN_H; i++) {
                 for (int j = 0; j < SCREEN_W; j++)
                         screen[i][j] = ' ';
         }
 }
 
-void blit_screen() {
+static void blit_screen() {
         system("cls");
 
         for (int i = 0; i < SCREEN_H; i++) {
@@ -23,7 +23,7 @@ void blit_screen() {
         }
 }
 
-void draw_block_to_screen(struct Block *block) {
+static void draw_block_to_screen(struct Block *block) {
         for (int i = 0; i < block->size; i++) {
                 for (int j = 0; j < block->size; j++) {
                         if (block->model[i][j] != ' ') {
@@ -33,15 +33,15 @@ void draw_block_to_screen(struct Block *block) {
         }
 }
 
-void create_block() {
+static void create_block() {
         cr_block = generate_block();
 }
 
-bool key_pressed(int key) {
+static bool key_pressed(int key) {
         return (GetAsyncKeyState(key) & 0x8000);
 }
 
-void clear_block_image(struct Block *block) {
+static void clear_block_image(struct Block *block) {
         for (int i = 0; i < block->size; i++) {
                 for (int j = 0; j < block->size; j++) {
                         if (block->model[i][j] != ' ')
@@ -50,7 +50,7 @@ void clear_block_image(struct Block *block) {
         }
 }
 
-bool left_collision(struct Block *block) {
+static bool left_collision(struct Block *block) {
         for (int i = 0; i < block->size; i++) {
                 for (int j = 0; j < block->size; j++) {
                         if (block->model[i][j] != ' ' && block->model[i][j - 1] == ' ' && (screen[block->x + i][block->y + j - 1] != ' ' || block->y + j - 1 < 0))
@@ -61,7 +61,7 @@ bool left_collision(struct Block *block) {
         return false;
 }
 
-bool right_collision(struct Block *block) {
+static bool right_collision(struct Block *block) {
         for (int i = 0; i < block->size; i++) {
                 for (int j = 0; j < block->size; j++) {
                         if (block->model[i][j] != ' ' && block->model[i][j + 1] == ' ' && (screen[block->x + i][block->y + j + 1] != ' ' || block->y + j + 1 >= SCREEN_W))
@@ -72,7 +72,7 @@ bool right_collision(struct Block *block) {
         return false;
 }
 
-bool bottom_collision(struct Block *block) {
+static bool bottom_collision(struct Block *block) {
         for (int i = 0; i <= block->size - 1; i++) {
                 if (block->model[block->size - 1][i] != ' ' && screen[block->x + block->size][block->y + i] != ' ')
                         return true;
@@ -89,7 +89,7 @@ bool bottom_collision(struct Block *block) {
         return false;
 }
 
-void input() {
+static void input() {
         if (key_pressed(VK_LEFT) && !left_collision(&cr_block)) {
                 cr_block.y--;
         }
@@ -109,16 +109,16 @@ void input() {
         }
 }
 
-void drop_block() {
+static void drop_block() {
         if (bottom_collision(&cr_block) || cr_block.x + cr_block.size == SCREEN_H) {
-                score += 10 * (lines_removed / 10 + 2);
                 create_block();
+                score += 10 * (lines_removed / 10 + 2);
         }
 
         cr_block.x++;
 }
 
-void delete_lines() {
+static void delete_lines() {
         bool line_del = false;
         int num_lines = 0;
 
@@ -179,11 +179,10 @@ void delete_lines() {
         score += line_score * (lines_removed / 10 + 1);
 }
 
-void display_score() {
+static void display_score() {
         printf("\nSCORE: %d              LEVEL %d", score, lines_removed / 10 + 1);
 }
 
-//TODO: make functions in the main file static
 int main() {
         init_screen();
         create_block();
