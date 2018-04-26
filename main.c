@@ -158,8 +158,9 @@ int main() {
         while (!key_pressed(VK_ESCAPE)) {
                 if (!bottom_collision(&cr_block) && cr_block.x + cr_block.size != SCREEN_H)
                         clear_block_image(&cr_block);
-                input();
+                //input();
                 drop_block();
+                input();
                 delete_lines();
 
                 draw_block_to_screen(&cr_block);
