@@ -81,4 +81,10 @@ void rotate_block(struct Block *block) {
                         block->model[i][j] = new_model[i][j];
                 }
         }
+
+        if (block->y < 0) {
+                block->y = 0;
+        } else if (block->y > SCREEN_W - block->size) {
+                block->y = SCREEN_W - block->size;
+        }
 }

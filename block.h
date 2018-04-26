@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #define BLOCK_H
-#define MAX_BLOCK_SIZE 4
+#define MAX_BLOCK_SIZE 5
 #define NUM_TYPES 5
 #include "main.h"
 
