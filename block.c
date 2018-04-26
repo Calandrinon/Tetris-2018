@@ -62,7 +62,7 @@ struct Block generate_block() {
         block.type = rand() % NUM_TYPES;
         type[block.type](&block);
         block.x = -block.size - 1;
-        block.y = rand() % (SCREEN_W - 1);
+        block.y = SCREEN_W / 2 - 1;
 
         return block;
 }
