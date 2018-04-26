@@ -20,4 +20,5 @@ void t5(struct Block*);
 void (*type[NUM_TYPES])(struct Block*);
 struct Block generate_block();
 void rotate_block(struct Block*);
+char screen[SCREEN_H][SCREEN_W];
 #endif

@@ -3,9 +3,8 @@
 #include <stdbool.h>
 #include "block.h"
 
-char screen[SCREEN_H][SCREEN_W];
-struct Block cr_block;
-int num_blocks, sleep_time = 333;
+static struct Block cr_block;
+static int num_blocks, sleep_time = 333;
 
 void init_screen() {
         for (int i = 0; i < SCREEN_H; i++) {

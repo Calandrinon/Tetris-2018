@@ -73,6 +73,9 @@ void rotate_block(struct Block *block) {
         for (int i = block->size - 1; i >= 0; i--) {
                 for (int j = block->size - 1; j >= 0; j--) {
                         new_model[block->size - j - 1][i] = block->model[i][j];
+
+                        if (screen[block->x + block->size - j - 1][block->y + i] != ' ')
+                                return;
                 }
         }
 
