@@ -16,11 +16,22 @@ static void init_screen() {
 static void blit_screen() {
         system("cls");
 
+        for (int i = 0; i <= SCREEN_W + 1; i++)
+                printf("__");
+
+        printf("\n");
+
         for (int i = 0; i < SCREEN_H; i++) {
+                printf("| ");
                 for (int j = 0; j < SCREEN_W; j++)
                         printf("%c ", screen[i][j]);
-                printf("\n");
+                printf("|\n");
         }
+
+        for (int i = 0; i <= SCREEN_W + 1; i++)
+                printf("__");
+
+        printf("\n");
 }
 
 static void draw_block_to_screen(struct Block *block) {
@@ -51,10 +62,17 @@ static void clear_block_image(struct Block *block) {
 }
 
 static bool left_collision(struct Block *block) {
-        for (int i = 0; i < block->size; i++) {
-                for (int j = 0; j < block->size; j++) {
-                        if (block->model[i][j] != ' ' && block->model[i][j - 1] == ' ' && (screen[block->x + i][block->y + j - 1] != ' ' || block->y + j - 1 < 0))
+        for (int i = 1; i < block->size; i++) {
+                for (int j = 1; j < block->size; j++) {
+                        if (block->model[i][j] != ' ' && block->model[i][j - 1] == ' '
+                        && (screen[block->x + i][block->y + j - 1] != ' ' || block->y + j - 1 < 0))
                                 return true;
+                }
+        }
+
+        for (int i = 0; i < block->size; i++) {
+                if (block->model[i][0] != ' ' && (screen[block->x + i][block->y - 1] != ' ' || block->y - 1 < 0)) {
+                        return true;
                 }
         }
 
