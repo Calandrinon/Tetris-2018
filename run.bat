@@ -1,2 +1,2 @@
-gcc main.c block.c -o tetris
+gcc src/main.c src/block.c -o tetris
 tetris
