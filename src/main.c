@@ -122,7 +122,7 @@ static void input() {
                 sleep_time = 333;
         }
 
-        if (key_pressed(VK_D)) {
+        if (key_pressed(VK_UP)) {
                 rotate_block(&cr_block);
         }
 }
